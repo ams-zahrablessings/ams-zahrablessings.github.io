@@ -1456,7 +1456,9 @@ async function webPush(ask){if(!webSupported()||Notification.permission==='denie
     var reg=await navigator.serviceWorker.register('firebase-messaging-sw.js');var msg=m.getMessaging(window.__fbApp);
     var tok=await m.getToken(msg,{vapidKey:S.settings.vapid,serviceWorkerRegistration:reg});
     if(tok){await saveToken(tok,'web');m.onMessage(msg,function(p){var n=p.notification||{};toast((n.title||'')+(n.body?': '+n.body:''))});return true}}catch(e){}return false}
-function pushOnce(){if(pushOnce.done||!S.uid||!R()||!S.setLoaded)return;pushOnce.done=true;if(isNativeApp())nativePush();else webPush(false)}
+async function askCamera(){try{if(localStorage.getItem('ams_cam'))return;localStorage.setItem('ams_cam','1')}catch(e){return}
+  try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;var st=await navigator.mediaDevices.getUserMedia({video:true});st.getTracks().forEach(function(t){t.stop()})}catch(e){}}
+function pushOnce(){if(pushOnce.done||!S.uid||!R()||!S.setLoaded)return;pushOnce.done=true;if(isNativeApp()){nativePush().then(askCamera)}else webPush(false)}
 async function callScript(payload){var u=(S.settings||{}).pushUrl;if(!u)return {ok:false,error:'The alerts service is not set up yet. Add its link in Settings.'};
   try{var t=await window.__idToken();var r=await fetch(u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({idToken:t},payload))});return await r.json()}catch(e){return {ok:false,error:'Could not reach the alerts service.'}}}
 function pushNow(title,body,uids){if(!(S.settings||{}).pushUrl)return;callScript({action:'push',title:title,body:body,uids:uids||null})}
