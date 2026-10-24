@@ -68,7 +68,7 @@ const emailOf=p=>"p"+normPhone(p)+"@ams.invalid";
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const css=`#auth{position:fixed;inset:0;z-index:100;background:var(--bg);overflow:auto;display:flex;justify-content:center;padding:max(24px,env(safe-area-inset-top)) 16px 24px}
 #auth .ac{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px}
-#auth .ah{border-radius:18px;padding:22px 18px;color:#fff;background:linear-gradient(135deg,#0B6B63,#2C8C7B 60%,#4AA59A)}
+#auth .ah{border-radius:18px;padding:22px 18px;color:#fff;background:linear-gradient(135deg,var(--h1,#0B6B63),var(--h2,#2C8C7B) 60%,var(--h3,#4AA59A))}
 #auth .ah h1{font-size:26px;margin:0}#auth .ah p{margin:6px 0 0;opacity:.9;font-size:14px}
 #auth form{display:flex;flex-direction:column;gap:12px}
 #auth .err{background:var(--bad-bg);color:var(--bad);border-radius:10px;padding:9px 12px;font-size:14px;font-weight:600}

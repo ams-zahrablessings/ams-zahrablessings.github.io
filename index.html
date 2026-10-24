@@ -215,6 +215,19 @@ header.top{display:block}
 .chprev img{height:56px;border-radius:8px}
 .mrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .mrow input{width:20px;height:20px;flex:none}
+
+/* every popup gets a coloured header band in the theme colour */
+.sheet{padding-top:0}
+.sheet>.bar{position:sticky;top:0;z-index:2;background:linear-gradient(135deg,var(--h1,#0B6B63),var(--h2,#2C8C7B));color:#fff;margin:0 calc(-1*var(--gr)) 4px calc(-1*var(--gl));padding:16px var(--gr) 14px var(--gl);border-radius:18px 18px 0 0}
+.sheet>.bar h3{color:#fff;font-size:20px}
+.sheet>.bar .btn.ghost{background:rgba(255,255,255,.2);color:#fff;border-color:transparent}
+.sheet[data-k=inbox]>.bar{background:linear-gradient(135deg,#B45309,#E58A1F)}
+/* dark mode versions of each theme */
+@media (prefers-color-scheme:dark){
+:root[data-skin=ocean]:not([data-theme="light"]){--bg:#0A1220;--surface:#111C2E;--line:#1F3050;--accent:#6AA8F0;--accent-ink:#04101F;--soft:#152A47;--ink:#E4ECF7;--muted:#92A5BF}
+:root[data-skin=plum]:not([data-theme="light"]){--bg:#130E1B;--surface:#1D1528;--line:#33264A;--accent:#B79AE8;--accent-ink:#1A0D2E;--soft:#2A1F40;--ink:#EDE6F7;--muted:#A596BD}
+:root[data-skin=sunset]:not([data-theme="light"]){--bg:#17100B;--surface:#21170F;--line:#3D2B1D;--accent:#F0A066;--accent-ink:#2A1304;--soft:#3A2616;--ink:#F5E9DE;--muted:#BBA591}
+:root[data-skin=slate]:not([data-theme="light"]){--bg:#0F131A;--surface:#171C25;--line:#2A3342;--accent:#9DB2D0;--accent-ink:#0C121C;--soft:#202838;--ink:#E6EAF0;--muted:#97A3B5}}
 </style>
 
 <header class="top">
