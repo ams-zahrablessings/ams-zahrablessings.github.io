@@ -140,6 +140,7 @@ async function afterLogin(u){
   });
   window.claude={use:async n=>n==="db"?db:(n==="user"?mk(role):(n==="downloads"?downloads:null))};
   window.__signOut=()=>signOut(auth).then(()=>location.reload());
+  window.__fbApp=app;window.__idToken=()=>auth.currentUser.getIdToken();
   const a=document.getElementById("auth");if(a)a.hidden=true;
   window.__start();
 }

@@ -1,6 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B6B63"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><style>[hidden]{display:none!important}html,body{margin:0}img,svg{max-width:100%}</style><title>AMS</title>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Lora:wght@600;700&family=Nunito+Sans:wght@400;600&family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<script>try{var __k=localStorage.getItem("ams_skin");if(__k)document.documentElement.dataset.skin=__k}catch(e){}</script>
 <style>
 /* Layout: a phone app shell. Sticky building header, one scrolling view, fixed six-tab bar. */
 :root{
@@ -177,11 +178,49 @@ nav.tabs .dot{position:absolute;top:1px;left:calc(50% + 6px);background:var(--ba
 .sheet[data-k=inbox] .card{border-left:4px solid var(--accent)}
 .sheet[data-k=inbox] .card.attn{border-left-color:var(--amb);background:var(--amb-bg)}
 .sh{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--amb);margin-top:6px}
+
+/* header in two lines */
+header.top{display:block}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hbtns{flex-wrap:nowrap}
+.hbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.hbar:empty{display:none}
+.hbar .chipbtn{flex:1 0 auto;text-align:center}
+.hero{background:linear-gradient(135deg,var(--h1,#0B6B63) 0%,var(--h2,#2C8C7B) 60%,var(--h3,#4AA59A) 100%)}
+/* skins: colour and font sets */
+:root[data-skin=ocean]{--font-d:'Poppins',system-ui,sans-serif;--font-b:'Inter',system-ui,sans-serif;--h1:#1F5FAE;--h2:#3A7BC8;--h3:#6AA0DC}
+:root[data-skin=plum]{--font-d:'Lora',Georgia,serif;--font-b:'Nunito Sans',system-ui,sans-serif;--h1:#6A3FA0;--h2:#8660BA;--h3:#A98BD3}
+:root[data-skin=sunset]{--font-d:'DM Serif Display',Georgia,serif;--font-b:'DM Sans',system-ui,sans-serif;--h1:#B4531A;--h2:#D0722F;--h3:#E69A5C}
+:root[data-skin=slate]{--font-d:'Space Grotesk',system-ui,sans-serif;--font-b:'Inter',system-ui,sans-serif;--h1:#334155;--h2:#51657F;--h3:#7A8DA6}
+@media (prefers-color-scheme:light){
+:root[data-skin=ocean]{--bg:#EAF0F7;--line:#D2DDEB;--accent:#1F5FAE;--soft:#DCE8F6;--ink:#101D2E;--muted:#586A82}
+:root[data-skin=plum]{--bg:#F1ECF7;--line:#DFD5EC;--accent:#6A3FA0;--soft:#E6DDF2;--ink:#21122F;--muted:#6A5C7C}
+:root[data-skin=sunset]{--bg:#F8F0E8;--line:#EBDCCB;--accent:#B4531A;--soft:#F3E1D0;--ink:#2E1A0E;--muted:#7A6454}
+:root[data-skin=slate]{--bg:#EEF0F3;--line:#D8DDE4;--accent:#334155;--soft:#E1E5EB;--ink:#141B26;--muted:#5B6676}}
+.skins{display:flex;flex-direction:column;gap:10px}
+.skin{display:flex;align-items:center;gap:12px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;text-align:left}
+.skin.on{border-color:var(--accent)}
+.skin i{width:34px;height:34px;border-radius:10px;flex:none}
+.skin b{display:block}
+.skin span{color:var(--muted);font-size:13px}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips:empty{display:none}
+.cimg{display:block;max-width:100%;max-height:240px;border-radius:10px;margin-top:6px;cursor:zoom-in}
+.msg .bub a{color:inherit;text-decoration:underline}
+.macts{display:flex;gap:10px;padding-inline:4px;font-size:12px}
+.lnk{background:none;border:0;color:var(--accent);font-size:12px;font-weight:600;padding:0;text-decoration:none}
+.iconb{padding-inline:10px;display:inline-flex;align-items:center}
+.chprev{display:flex;align-items:center;gap:10px;padding:6px 0}
+.chprev img{height:56px;border-radius:8px}
+.mrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.mrow input{width:20px;height:20px;flex:none}
 </style>
 
 <header class="top">
-  <div><h1 id="bname">AMS</h1><small>Residents' app</small></div>
-  <div class="hbtns" id="hbtns"></div>
+  <div class="hrow"><div><h1 id="bname">AMS</h1><small>Residents' app</small></div>
+  <div class="hbtns" id="hbtns"></div></div>
+  <div class="hbar" id="hbar"></div>
 </header>
 <main id="view"><div class="empty"><b>Opening your building…</b>Loading notices, residents and accounts.</div></main>
 <nav class="tabs" id="tabs"></nav>
@@ -470,14 +509,24 @@ var TABS={
 
 
  chat:{label:'Chat',
-  shell:function(){return '<div class="bar"><div><h2>Building chat</h2><div class="sub">Visible to all residents</div></div></div><div id="msgs"></div>'+
-    (S.canWrite?'<form class="composer" id="chatForm"><input id="chatText" placeholder="Write a message" autocomplete="off" aria-label="Message"><button class="btn" type="submit">Send</button></form>':'<div class="empty">You can read the chat but not post. Ask the committee for access.</div>')},
+  shell:function(){return '<div class="bar"><div><h2 id="chTitle">Chat</h2><div class="sub" id="chSub"></div></div><div class="actions" id="chAct"></div></div><div class="chips" id="chips"></div><div id="msgs"></div>'+
+    (S.canWrite?'<div id="chNote" class="sub" hidden></div><div id="chPrev" class="chprev" hidden></div><form class="composer" id="chatForm"><label class="btn ghost iconb" for="chatPhoto" aria-label="Add a photo"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></label><input id="chatPhoto" type="file" accept="image/*" hidden><input id="chatText" placeholder="Write a message" autocomplete="off" aria-label="Message"><button class="btn" type="submit">Send</button></form>':'<div class="empty">You can read the chat but not post. Ask the committee for access.</div>')},
   fill:function(){
-    var M=$('#msgs');var arr=S.messages.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
-    if(!arr.length){M.innerHTML='<div class="empty"><b>No messages yet</b>Say hello to your neighbours.</div>';return}
+    var cur=chatCur();var g=cur==='all'?null:S.groups[cur];var ids=myGroupIds();
+    $('#chTitle').textContent=g?g.name:'Building chat';
+    $('#chSub').textContent=g?(canPostGroup(cur)?'Only members of this group can see this':'Stealth view: members cannot see that you are here'):'Visible to all residents';
+    var chips='<button data-act="chatGroup" data-v="all" class="'+(cur==='all'?'on':'')+'">Everyone</button>'+ids.map(function(x){return '<button data-act="chatGroup" data-v="'+esc(x)+'" class="'+(cur===x?'on':'')+'">'+esc(S.groups[x].name)+'</button>'}).join('');
+    $('#chips').innerHTML=ids.length||R()==='super'?chips:'';
+    var act='';var wl=g?g.wa:(S.settings&&S.settings.wa);
+    if(wl)act+='<a class="btn ghost small" href="'+esc(wl)+'" target="_blank" rel="noopener">WhatsApp group</a>';
+    if(R()==='super'){act+='<button class="btn ghost small" data-act="groupNew">New group</button>';act+=g?'<button class="btn ghost small" data-act="groupManage" data-v="'+esc(cur)+'">Manage</button>':'<button class="btn ghost small" data-act="chatTools">Tools</button>'}
+    $('#chAct').innerHTML=act;
+    var cf=$('#chatForm');if(cf){var ok=g?canPostGroup(cur):true;cf.hidden=!ok;var nt=$('#chNote');nt.hidden=ok;nt.innerHTML=ok?'':'You are viewing this group privately. <button class="lnk" type="button" data-act="groupJoin" data-v="'+esc(cur)+'">Join the group to post</button>'}
+    if(g)watchGroup(cur);
+    var M=$('#msgs');var src=g?(S.gmsgs[cur]||[]):S.messages;var arr=src.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
+    if(!arr.length){M.innerHTML='<div class="empty"><b>No messages yet</b>Say hello to your neighbours.</div>';M.dataset.filled='';return}
     var nearBottom=(window.innerHeight+window.scrollY)>document.body.scrollHeight-160;var first=!M.dataset.filled;
-    M.innerHTML=arr.map(function(m){var me=m.by&&m.by===S.uid;var nm=me?'You':(m.name||nameOf(m.by)||'Neighbour');
-      return '<div class="msg'+(me?' me':'')+'"><div class="who">'+esc(nm)+esc(m.tag?' · '+m.tag:roleTag(m.by))+(m.flat?' · '+esc(m.flat):'')+' · '+fd(m.ts)+'</div><div class="bub">'+esc(m.text)+'</div></div>'}).join('');
+    M.innerHTML=arr.map(function(m){return msgHtml(m)}).join('');
     M.dataset.filled='1';if(first||nearBottom)window.scrollTo(0,document.body.scrollHeight)}},
 
  requests:{label:'Requests',
@@ -518,7 +567,7 @@ function tabsHtml(){var pc=may('payments')?pendingSubs().length:0;
 function draw(){
   if(S.failed)return;
   if(!S.isOwner&&!R()){
-    $('#tabs').innerHTML='';$('#hbtns').innerHTML=window.__signOut?'<button class="chipbtn" data-act="signout">Sign out</button>':'';$('header.top small').textContent="Residents' app";
+    $('#tabs').innerHTML='';$('#hbtns').innerHTML=window.__signOut?'<button class="chipbtn" data-act="signout">Sign out</button>':'';$('#hbar').innerHTML='';$('header.top small').textContent="Residents' app";
     if(!S.rolesLoaded||!S.jrLoaded)return;
     return gateView()}
   $('#view').dataset.gate='';
@@ -529,11 +578,17 @@ function draw(){
   $('#tabs').innerHTML=tabsHtml();$('#tabs').style.gridTemplateColumns='repeat('+tabOrder().length+',minmax(0,1fr))';
   $('header.top small').textContent="Residents' app · "+ROLE_LABEL[R()];
   var nc=notifCount();
+  applySkin(curSkin());syncGroups();
   var hb='<button class="chipbtn bell" data-act="inbox" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true">'+ICON.notices+'</svg>'+(nc?'<span class="bn">'+nc+'</span>':'')+'</button>';
-  hb+=(S.roles[S.uid]&&S.roles[S.uid].flat)?'<span class="chipbtn">Flat '+esc(S.flat)+'</span>':'<button class="chipbtn" data-act="myFlat">'+(S.flat?'Flat '+esc(S.flat):'Set my flat')+'</button>';
-  if(may('people')||may('financeAssign')){var jc=S.joinAll.filter(function(j){return j.status==='Pending'}).length;hb+='<button class="chipbtn" data-act="people">People'+(jc?' · '+jc:'')+'</button>'}
-  if(importKeys().length)hb+='<button class="chipbtn" data-act="import">Import/Export</button>';if(window.__signOut)hb+='<button class="chipbtn" data-act="signout">Sign out</button>';if(R()==='super')hb+='<button class="chipbtn" data-act="manage">Manage</button><button class="chipbtn" data-act="settings">Settings</button>';
-  $('#hbtns').innerHTML=hb;
+  if(window.__signOut)hb+='<button class="chipbtn" data-act="signout">Sign out</button>';
+  var bb='';
+  bb+=(S.roles[S.uid]&&S.roles[S.uid].flat)?'<span class="chipbtn">Flat '+esc(S.flat)+'</span>':'<button class="chipbtn" data-act="myFlat">'+(S.flat?'Flat '+esc(S.flat):'Set my flat')+'</button>';
+  if(may('people')||may('financeAssign')){var jc=S.joinAll.filter(function(j){return j.status==='Pending'}).length;bb+='<button class="chipbtn" data-act="people">People'+(jc?' · '+jc:'')+'</button>'}
+  if(importKeys().length)bb+='<button class="chipbtn" data-act="import">Import/Export</button>';
+  if(R()==='super')bb+='<button class="chipbtn" data-act="manage">Manage</button><button class="chipbtn" data-act="settings">Settings</button>';
+  bb+='<button class="chipbtn" data-act="skin">Theme</button>';
+  if(alertsCanAsk())bb+='<button class="chipbtn" data-act="enableAlerts">Enable alerts</button>';
+  $('#hbtns').innerHTML=hb;$('#hbar').innerHTML=bb;pushOnce();
   if(S.shellTab!==S.tab){
     $('#view').innerHTML='<div id="banner"></div><div id="body" style="display:flex;flex-direction:column;gap:14px"></div>';
     $('#body').innerHTML=t.shell();S.shellTab=S.tab;bindShell()}
@@ -543,15 +598,19 @@ function draw(){
 }
 function bindShell(){
   var q=$('#q');if(q)q.addEventListener('input',function(){S.q=q.value;TABS.directory.fill()});
-  var cf=$('#chatForm');if(cf)cf.addEventListener('submit',async function(e){e.preventDefault();var i=$('#chatText');var text=i.value.trim();if(!text)return;i.value='';
-    var ok=await run(function(){return S.db.collection('messages').add({text:text.slice(0,1000),by:S.uid,flat:S.flat||'',name:myName(),tag:myTag().replace(' · ',''),ts:Date.now()})});if(!ok)i.value=text})
+  var cf=$('#chatForm');if(cf){cf.addEventListener('submit',async function(e){e.preventDefault();var i=$('#chatText');var text=i.value.trim();var img=S.chatImg||'';if(!text&&!img)return;i.value='';S.chatImg='';chatPrev();
+    var cur=chatCur();var path=cur==='all'?'messages':'groups/'+cur+'/messages';var o={text:text.slice(0,1000),by:S.uid,flat:S.flat||'',name:myName(),tag:myTag().replace(' · ',''),ts:Date.now()};if(img)o.img=img;
+    var ok=await run(function(){return S.db.collection(path).add(o)});if(!ok){i.value=text;S.chatImg=img;chatPrev()}});
+    var ph=$('#chatPhoto');if(ph)ph.addEventListener('change',async function(){var f=ph.files&&ph.files[0];ph.value='';if(!f)return;
+      if(!/^image\//.test(f.type)){toast('Only photos can be sent in chat');return}
+      try{S.chatImg=await chatImage(f);chatPrev()}catch(er){toast('That photo could not be used. Try another.')}})}
 }
 function go(tab){if(!tabOk(tab))tab='home';S.tab=tab;S.shellTab=null;draw();window.scrollTo(0,0)}
 function reshell(){S.shellTab=null;draw()}
 
 /* ---------- forms ---------- */
 function formNotice(){openSheet('Post a notice',field('title','Title','text','','required maxlength="120"')+select('kind','Type',['General','Urgent','Meeting','Maintenance','Loadshedding'],'General')+area('body','Message','','required maxlength="2000"'),'Post to all residents',function(d){
-  return run(function(){return S.db.collection('notices').add({title:d.title,body:d.body,kind:d.kind,ts:Date.now()})})})}
+  return run(function(){return S.db.collection('notices').add({title:d.title,body:d.body,kind:d.kind,ts:Date.now()})}).then(function(ok){if(ok)pushNow((d.kind==='Urgent'?'Urgent: ':'')+d.title,String(d.body).slice(0,140),null);return ok})})}
 function formResident(r){var del=r?'<button class="btn danger" type="button" data-act="del" data-col="residents" data-id="'+esc(r.id)+'">Remove</button>':'';
   var flatsList=bflats().slice();S.residents.forEach(function(x){var f=String(x.flat||'').trim().toUpperCase();if(f&&flatsList.indexOf(f)<0)flatsList.push(f)});
   var types=['Owner','Tenant'];if(r&&r.role&&types.indexOf(r.role)<0)types.push(r.role);
@@ -635,9 +694,10 @@ function formManage(){
     field('name','Building name','text',st.name||'','required maxlength="60"')+field('cur','Currency label','text',st.cur||'Rs','required maxlength="6"')+field('cc','Country phone code','text',st.cc||'92','required maxlength="4" inputmode="numeric"')+
     field('opening','Opening fund balance','number',Number(st.opening)||0,'step="1" inputmode="numeric"')+field('fee','Default monthly maintenance per flat','number',st.fee||0,'min="0" step="1" inputmode="numeric"')+
     field('wa','Building WhatsApp group or Channel link','url',st.wa||'','maxlength="200"')+
+    field('pushUrl','Alerts service address (Apps Script web app link)','url',st.pushUrl||'','maxlength="300"')+field('vapid','Web alerts key (VAPID, from Firebase)','text',st.vapid||'','maxlength="200"')+
     area('flats','Flat list (comma separated)',bflats().join(', '),'required rows="4"'),'Save settings',function(d){
     var fl=Array.from(new Set(String(d.flats).split(/[,\n]+/).map(function(x){return x.trim().toUpperCase()}).filter(Boolean)));
-    var body=Object.assign({},st,{name:d.name,cur:d.cur||'Rs',cc:d.cc||'92',opening:Number(d.opening)||0,fee:Number(d.fee)||0,wa:d.wa||'',flats:fl,setupDone:true});
+    var body=Object.assign({},st,{name:d.name,cur:d.cur||'Rs',cc:d.cc||'92',opening:Number(d.opening)||0,fee:Number(d.fee)||0,wa:d.wa||'',pushUrl:d.pushUrl||'',vapid:d.vapid||'',flats:fl,setupDone:true});
     return run(async function(){await saveSettings(body);await ensureFlats(fl)})},clr)}
 async function saveProfile(patch){S.profile=Object.assign({},S.profile,patch);
   if(S.uid)try{await S.db.doc('data/users/'+S.uid+'/profile').set(S.profile)}catch(e){}}
@@ -708,7 +768,7 @@ async function pushReminders(items,key){
   var day=todayStr(),sent=0,off=0;
   try{
     for(var i=0;i<items.length;i++){var it=items[i];var us=uidsForFlat(it.flat);if(!us.length){off++;continue}
-      for(var j=0;j<us.length;j++){await S.db.doc('reminders/'+us[j]+'/items/r_'+day+'_'+(it.key||key||'pay')).set({flat:it.flat,text:it.text,ts:Date.now(),by:S.uid||'',kind:'payment'});sent++}}
+      for(var j=0;j<us.length;j++){await S.db.doc('reminders/'+us[j]+'/items/r_'+day+'_'+(it.key||key||'pay')).set({flat:it.flat,text:it.text,ts:Date.now(),by:S.uid||'',kind:'payment'});sent++}pushNow('Payment reminder',String(it.text).slice(0,140),us)}
   }catch(e){toast(errMsg(e)+(sent?' ('+sent+' sent before it stopped)':''));return false}
   toast('Reminder sent to '+sent+' resident'+(sent===1?'':'s')+(off?'. '+off+' flat'+(off>1?'s are':' is')+' not on the app yet.':'.'));return true}
 function openRemind(){
@@ -843,14 +903,14 @@ function gateView(){
   if(jr&&jr.status==='Pending'){v.innerHTML='<div class="card focus"><h2>Request sent</h2><div class="body">Your request to join as flat '+esc(jr.flat)+' is waiting for the building committee. Reopen this page after they approve it.</div><div class="meta">Sent '+fd(jr.ts)+'</div></div>';return}
   var note=(jr&&jr.status==='Declined')?'<div class="banner alert"><span>Your last request was declined'+(jr.note?': '+esc(jr.note):'.')+' You can send a new one.</span></div>':'';
   v.innerHTML=note+'<div class="card focus"><h2>Join '+BN()+'</h2><div class="sub">Send your details to the building committee. You get access once they approve.</div><form class="sheetform" id="joinForm">'+
-    field('name','Your full name','text',S.names[S.uid]||'','required maxlength="80"')+field('phone','WhatsApp number','tel','','maxlength="20" placeholder="03xx xxxxxxx" inputmode="tel"')+select('flat','Your flat',bflats(),bflats()[0]||'')+
+    field('name','Your full name','text',S.names[S.uid]||'','required maxlength="80"')+field('phone','WhatsApp number','tel','','maxlength="20" placeholder="03xx xxxxxxx" inputmode="tel"')+field('email','Email (optional, for PIN help)','email','','maxlength="100" autocomplete="email"')+select('flat','Your flat',bflats(),bflats()[0]||'')+
     select('relation','You are the',['Owner','Tenant','Family member'],'Owner')+'<label class="f" for="f_photo"><span>Your photo (optional)</span><input id="f_photo" name="photo" type="file" accept="image/*"></label><img id="jprev" class="preview" alt="" hidden>'+'<div class="actions"><button class="btn" type="submit">Send request</button></div></form></div>';
   var jp=$('#f_photo');jp.addEventListener('change',function(){var pv=$('#jprev');if(jp.files&&jp.files[0]){var fr=new FileReader();fr.onload=function(){pv.src=fr.result;pv.hidden=false};fr.readAsDataURL(jp.files[0])}else pv.hidden=true});
   $('#joinForm').addEventListener('submit',async function(e){
     e.preventDefault();var f=e.target;var btn=f.querySelector('button[type=submit]');btn.disabled=true;
     var d={};new FormData(f).forEach(function(val,k){d[k]=(typeof val==='string')?val.trim():val});
     var photo='';if(d.photo&&d.photo.size){try{photo=await readAvatar(d.photo)}catch(er){toast('That file is not a usable photo.');btn.disabled=false;return}}
-    var ok=await run(function(){return S.db.doc('joinrequests/'+S.uid).set({name:d.name,phone:d.phone,flat:d.flat.toUpperCase(),relation:d.relation,photo:photo,status:'Pending',ts:Date.now()})});
+    var ok=await run(function(){return S.db.doc('joinrequests/'+S.uid).set({name:d.name,phone:d.phone,email:d.email||'',flat:d.flat.toUpperCase(),relation:d.relation,photo:photo,status:'Pending',ts:Date.now()})});
     btn.disabled=false;if(ok)toast('Request sent to the committee')})
 }
 function rb(u,role,label){return '<button class="btn ghost small" data-act="setRole" data-uid="'+esc(u)+'" data-v="'+role+'">'+label+'</button>'}
@@ -860,6 +920,7 @@ function personCard(u,r){var b='';if(u===S.uid){r=Object.assign({},r);if(!r.flat
     if(r.role==='finance'&&may('financeAssign'))b+=rb(u,'member','Make member');
     if((r.role==='member'||r.role==='finance')&&may('committeeAssign'))b+=rb(u,'committee','Make committee');
     if(r.role==='committee'&&may('committeeAssign'))b+=rb(u,'member','Make member');
+    if(may('people')&&(r.role!=='committee'||may('committeeAssign'))&&r.role!=='super'&&(S.settings||{}).pushUrl)b+='<button class="btn ghost small" data-act="resetPin" data-uid="'+esc(u)+'">Reset PIN</button>';
     if(may('people')&&(r.role!=='committee'||may('committeeAssign')))b+='<button class="btn danger small" data-act="removeRole" data-uid="'+esc(u)+'">Remove access</button>'}
   return '<div class="card" data-q="'+esc(((r.name||'')+' '+(r.flat||'')+' '+(r.phone||'')).toLowerCase())+'"><div class="row"><div><div class="title">'+esc(r.name||'Unnamed')+(u===S.uid?' (you)':'')+'</div><div class="meta">Flat '+esc(r.flat||'?')+(r.relation?' · '+esc(r.relation):'')+(r.phone?' · '+esc(r.phone):'')+'</div></div><span class="pill '+(r.role==='finance'?'ok':(r.role==='committee'?'warn':''))+'">'+esc(ROLE_LABEL[r.role]||r.role)+'</span></div>'+(b?'<div class="actions">'+b+'</div>':'')+'</div>'}
 function openPeople(){
@@ -868,7 +929,8 @@ function openPeople(){
   if(may('people')){
     var pend=S.joinAll.filter(function(j){return j.status==='Pending'}).sort(function(a,b){return (a.ts||0)-(b.ts||0)});
     h+='<div class="meta">Join requests</div>';
-    h+=pend.length?pend.map(function(j){return '<div class="card"><div class="row"><div class="dir" style="align-items:center">'+avatarHtml(j)+'<div class="info"><div class="title">'+esc(j.name)+'</div><div class="meta">Flat '+esc(j.flat)+' · '+esc(j.relation)+(j.phone?' · '+esc(j.phone):'')+'</div></div></div><span class="meta">'+fd(j.ts)+'</span></div>'+
+    var npre=pend.filter(preMatch).length;if(npre)h+='<div class="actions"><button class="btn small" data-act="approveAllPre">Approve all pre-approved ('+npre+')</button></div>';
+    h+=pend.length?pend.map(function(j){return '<div class="card"><div class="row"><div class="dir" style="align-items:center">'+avatarHtml(j)+'<div class="info"><div class="title">'+esc(j.name)+'</div><div class="meta">Flat '+esc(j.flat)+' · '+esc(j.relation)+(j.phone?' · '+esc(j.phone):'')+(j.email?' · '+esc(j.email):'')+'</div>'+(preMatch(j)?'<span class="pill ok">✓ Pre-approved</span>':'')+'</div></div><span class="meta">'+fd(j.ts)+'</span></div>'+
       '<input id="dn_'+esc(j.id)+'" placeholder="Reason if declining (optional)" maxlength="120" aria-label="Reason for declining">'+
       '<div class="actions"><button class="btn small" data-act="approveJoin" data-uid="'+esc(j.id)+'">Approve</button><button class="btn danger small" data-act="declineJoin" data-uid="'+esc(j.id)+'">Decline</button></div></div>'}).join(''):'<div class="empty"><b>No requests waiting</b>New residents appear here when they ask to join.</div>'}
   var ids=Object.keys(S.roles).sort(function(a,b){return natural(S.roles[a].flat||'',S.roles[b].flat||'')});
@@ -878,14 +940,14 @@ function openPeople(){
   infoSheet('People',h);$('#sheet').dataset.k='people';
   var pq=$('#pq');if(pq)pq.addEventListener('input',function(){var q=pq.value.trim().toLowerCase();document.querySelectorAll('#sheet .card[data-q]').forEach(function(c){if(c.parentNode&&c.querySelector('.pill')&&c.querySelector('.pill').textContent==='Member')c.hidden=!!q&&c.dataset.q.indexOf(q)<0})})}
 function refreshPeople(){setTimeout(function(){if($('#sheet').dataset.k==='people')openPeople()},250)}
-async function approveJoin(u){var j=S.joinAll.filter(function(x){return x.id===u})[0];if(!j)return;
+async function approveJoin(u,quiet){var j=S.joinAll.filter(function(x){return x.id===u})[0];if(!j)return;var pa=(S.pre||{})[pk(j.phone)];if(pa)j=Object.assign({},j,{flat:pa.flat||j.flat,relation:pa.relation||j.relation});
   var ok=await run(async function(){
-    await S.db.doc('roles/'+u).set({role:'member',name:j.name,phone:j.phone||'',flat:j.flat,relation:j.relation,ts:Date.now()});
+    await S.db.doc('roles/'+u).set({role:'member',name:j.name,phone:j.phone||'',email:j.email||'',flat:j.flat,relation:j.relation,groups:((S.ginv||{})[pk(j.phone)]||{}).groups||[],ts:Date.now()});
     var ph=S.residents.filter(function(r){return String(r.flat).trim().toUpperCase()===String(j.flat).trim().toUpperCase()&&r.name==='Name not added yet'})[0];
     var rb2={flat:j.flat,name:j.name,phone:j.phone||'',role:j.relation==='Tenant'?'Tenant':(j.relation==='Owner'?'Owner':'Family'),status:'Resident',uid:u};if(j.photo)rb2.photo=j.photo;
     if(ph)await S.db.doc('residents/'+ph.id).update(rb2);else await S.db.collection('residents').add(rb2);
-    await S.db.doc('joinrequests/'+u).delete()});
-  if(ok){toast('Approved. They now have access.');refreshPeople()}}
+    await S.db.doc('joinrequests/'+u).delete();if(pa)await S.db.doc('preapproved/'+pa.id).delete();if((S.ginv||{})[pk(j.phone)])await S.db.doc('groupinvites/'+pk(j.phone)).delete()});
+  if(ok){if(!quiet)toast('Approved. They now have access.');refreshPeople()}return ok}
 async function declineJoin(u){var n=$('#dn_'+u);var note=(n&&n.value.trim())||'';
   var ok=await run(function(){return S.db.doc('joinrequests/'+u).update({status:'Declined',note:note})});
   if(ok){toast('Request declined');refreshPeople()}}
@@ -914,6 +976,22 @@ document.addEventListener('click',async function(e){
   if(a==='openReview')return openReview();
   if(a==='people')return openPeople();
   if(a==='inbox')return openInbox();
+  if(a==='chatGroup'){S.chatGroup=el.dataset.v;S.chatImg='';chatPrev();var mm=$('#msgs');if(mm)mm.dataset.filled='';return render()}
+  if(a==='groupNew')return formGroupNew();
+  if(a==='groupManage')return formGroupManage(el.dataset.v);
+  if(a==='chatTools')return openChatTools();
+  if(a==='groupJoin'){var jg=el.dataset.v;return void run(function(){return setGroups(S.uid,function(c){if(c.indexOf(jg)<0)c.push(jg);return c})})}
+  if(a==='chatPhotoClear'){S.chatImg='';return chatPrev()}
+  if(a==='groupDelete'){if(!arm(el,'Tap again to delete'))return;var dg=el.dataset.v;return void run(async function(){await S.db.doc('groups/'+dg).delete();S.chatGroup='all';closeSheet()})}
+  if(a==='chatDel'){if(!arm(el,'Tap again'))return;var cg=chatCur();return void run(function(){return S.db.doc((cg==='all'?'messages':'groups/'+cg+'/messages')+'/'+el.dataset.id).delete()})}
+  if(a==='chatImg'){var cm=(chatCur()==='all'?S.messages:(S.gmsgs[chatCur()]||[])).filter(function(x){return x.id===el.dataset.id})[0];if(cm&&cm.img)infoSheet('Photo','<img src="'+cm.img+'" alt="Photo from chat" style="width:100%;border-radius:12px">');return}
+  if(a==='pruneChat')return void pruneAll(Number(el.dataset.v)||30);
+  if(a==='skin')return openSkins();
+  if(a==='skinSet'){setSkin(el.dataset.v,false);return openSkins()}
+  if(a==='skinAll'){return void setSkin(el.dataset.v,true)}
+  if(a==='enableAlerts')return void webPush(true).then(function(ok){toast(ok?'Alerts are on for this device':'Alerts could not be turned on. Check your browser settings.');draw()});
+  if(a==='approveAllPre')return void approveAllPre();
+  if(a==='resetPin')return formResetPin(el.dataset.uid);
   if(a==='defaulters')return openDefaulters();
   if(a==='remind')return openRemind();
   if(a==='remindFlat'){var rf=flats().filter(function(x){return x.flat===el.dataset.flat})[0];var rt=rf?inAppText(rf):'';if(!rt){toast('Nothing to remind. A receipt may already be under review.');return}return void pushReminders([{flat:rf.flat,text:rt}],'pay')}
@@ -1232,6 +1310,11 @@ var IMPORTS={
     apply:async function(ds){for(var i=0;i<ds.length;i++){var d=ds[i];
       var ex=S.residents.filter(function(r){return String(r.flat).trim().toUpperCase()===d.flat&&(r.name==='Name not added yet'||String(r.name).toLowerCase()===d.name.toLowerCase())})[0];
       if(ex)await S.db.doc('residents/'+ex.id).update(d);else await S.db.collection('residents').add(d)}}},
+  preapproved:{label:'Pre-approved residents',perm:'people',cols:['name','phone','flat','type'],sample:[['Ahmed Khan','0300 1234567','G1','Owner'],['Sara Ali','0321 7654321','101','Tenant']],
+    check:function(o,seen){var n=(o.name||'').trim();if(!n)return {err:'Name is empty'};var k=pk(o.phone);if(k.length<10)return {err:'Phone number is missing or too short'};if(seen[k])return {err:'Duplicate phone in file'};seen[k]=1;
+      var f=(o.flat||'').trim().toUpperCase();if(bflats().indexOf(f)<0)return {err:'Unknown flat '+f};var t=/^ten/i.test(o.type||'')?'Tenant':'Owner';
+      return {d:{name:n,phone:cleanPhone(o.phone),flat:f,relation:t},note:t+' · flat '+f}},
+    apply:async function(ds){for(var i=0;i<ds.length;i++){var d=ds[i];await S.db.doc('preapproved/'+pk(d.phone)).set(d)}}},
   budget:{label:'Monthly budget items',perm:'expense',cols:['name','group','type','estimate'],sample:[['Utility - Electricity','Utilities','average','80000'],['Salary - Gatekeeper','Salaries','fixed','30000']],
     check:function(o,seen){var n=(o.name||'').trim();if(!n)return {err:'Name is empty'};if(seen[n.toLowerCase()])return {err:'Duplicate in file'};seen[n.toLowerCase()]=1;
       var g=GROUPS.filter(function(x){return x.toLowerCase()===(o.group||'').toLowerCase()})[0]||'Other';var k=/^fix/i.test(o.type||'')?'fixed':'average';var a=Number(String(o.estimate||'0').replace(/[^\d.]/g,''))||0;
@@ -1334,8 +1417,115 @@ async function start(){
     S.db.collection('roles').onSnapshot(function(s){var m={};docs(s).forEach(function(d){m[d.id]=d});S.roles=m;var nr=(m[S.uid]||{}).role||null;if(nr!==role0){location.reload();return}var mr=m[S.uid];if(mr&&mr.flat)S.flat=mr.flat;render()},function(e){fail(e)})}
   else S.db.doc('roles/'+S.uid).onSnapshot(function(s){var o=s.exists?s.data():null;if(!o||o.role!==role0){location.reload();return}o.id=S.uid;S.roles[S.uid]=o;if(o.flat)S.flat=o.flat;render()},function(){});
   if(may('people'))S.db.collection('joinrequests').onSnapshot(function(s){S.joinAll=docs(s);render()},function(){});
+  if(may('people'))S.db.collection('preapproved').onSnapshot(function(s){var m={};docs(s).forEach(function(d){m[d.id]=d});S.pre=m;render()},function(){});
+  if(may('people'))S.db.collection('groupinvites').onSnapshot(function(s){var m={};docs(s).forEach(function(d){m[d.id]=d});S.ginv=m;render()},function(){});
   draw();
 }
+
+/* ---------- skins (colour and font sets) ---------- */
+var SKINS=[{k:'green',n:'Emerald',d:'Green and white, Bricolage font',c:'#0B6B63'},{k:'ocean',n:'Ocean',d:'Blue, Poppins font',c:'#1F5FAE'},{k:'plum',n:'Plum',d:'Purple, Lora serif font',c:'#6A3FA0'},{k:'sunset',n:'Sunset',d:'Warm orange, DM Serif font',c:'#B4531A'},{k:'slate',n:'Slate',d:'Grey-blue, Space Grotesk font',c:'#334155'}];
+function curSkin(){try{var l=localStorage.getItem('ams_skin');if(l)return l}catch(e){}return (S.settings&&S.settings.skin)||'green'}
+function applySkin(k){var el=document.documentElement;if(k&&k!=='green')el.dataset.skin=k;else delete el.dataset.skin}
+function setSkin(k,all){
+  if(all){return run(function(){return S.db.doc('settings/main').set(Object.assign({},S.settings,{skin:k}))}).then(function(ok){if(ok){try{localStorage.removeItem('ams_skin')}catch(e){}toast('Theme set for everyone');applySkin(k);closeSheet()}})}
+  try{localStorage.setItem('ams_skin',k)}catch(e){}applySkin(k)}
+function openSkins(){var c=curSkin();
+  var h='<div class="meta">Your choice is kept on this device.</div><div class="skins">'+SKINS.map(function(x){return '<button class="skin'+(x.k===c?' on':'')+'" type="button" data-act="skinSet" data-v="'+x.k+'"><i style="background:'+x.c+'"></i><div><b>'+x.n+(x.k===c?' ✓':'')+'</b><span>'+x.d+'</span></div></button>'}).join('')+'</div>';
+  if(R()==='super')h+='<div class="actions"><button class="btn ghost" type="button" data-act="skinAll" data-v="'+c+'">Use this theme for everyone</button></div>';
+  infoSheet('Theme',h)}
+/* ---------- pre-approved residents ---------- */
+function pk(p){return String(p||'').replace(/\D/g,'').slice(-10)}
+function preMatch(j){var pa=(S.pre||{})[pk(j.phone)];return !!pa&&String(pa.flat).toUpperCase()===String(j.flat).toUpperCase()}
+async function approveAllPre(){var l=S.joinAll.filter(function(j){return j.status==='Pending'&&preMatch(j)});var n=0;
+  for(var i=0;i<l.length;i++){if(await approveJoin(l[i].id,true))n++}
+  toast(n+' resident'+(n===1?'':'s')+' approved');refreshPeople()}
+/* ---------- push alerts (web, Android app) and the alerts service ---------- */
+function hashTok(t){var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)+t.length}
+function isNativeApp(){return /AMSPush/.test(navigator.userAgent)&&window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.PushNotifications}
+async function saveToken(tok,kind){try{await S.db.doc('tokens/'+kind+'_'+hashTok(tok)).set({uid:S.uid,token:tok,kind:kind,ts:Date.now()})}catch(e){}}
+async function nativePush(){var P=window.Capacitor.Plugins.PushNotifications;
+  try{var r=await P.checkPermissions();if(r.receive==='prompt'||r.receive==='prompt-with-rationale')r=await P.requestPermissions();if(r.receive!=='granted')return;
+    P.addListener('registration',function(t){saveToken(t.value,'android')});
+    P.addListener('pushNotificationReceived',function(n){toast((n.title||'')+(n.body?': '+n.body:''))});
+    await P.register()}catch(e){}}
+function webSupported(){return !isNativeApp()&&('serviceWorker' in navigator)&&('Notification' in window)&&((S.settings||{}).vapid)}
+function alertsCanAsk(){return webSupported()&&Notification.permission==='default'}
+async function webPush(ask){if(!webSupported()||Notification.permission==='denied')return false;
+  try{if(Notification.permission==='default'){if(!ask)return false;var pr=await Notification.requestPermission();if(pr!=='granted')return false}
+    var m=await import('https://www.gstatic.com/firebasejs/13.1.0/firebase-messaging.js');if(!(await m.isSupported()))return false;
+    var reg=await navigator.serviceWorker.register('firebase-messaging-sw.js');var msg=m.getMessaging(window.__fbApp);
+    var tok=await m.getToken(msg,{vapidKey:S.settings.vapid,serviceWorkerRegistration:reg});
+    if(tok){await saveToken(tok,'web');m.onMessage(msg,function(p){var n=p.notification||{};toast((n.title||'')+(n.body?': '+n.body:''))});return true}}catch(e){}return false}
+function pushOnce(){if(pushOnce.done||!S.uid||!R()||!S.setLoaded)return;pushOnce.done=true;if(isNativeApp())nativePush();else webPush(false)}
+async function callScript(payload){var u=(S.settings||{}).pushUrl;if(!u)return {ok:false,error:'The alerts service is not set up yet. Add its link in Settings.'};
+  try{var t=await window.__idToken();var r=await fetch(u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({idToken:t},payload))});return await r.json()}catch(e){return {ok:false,error:'Could not reach the alerts service.'}}}
+function pushNow(title,body,uids){if(!(S.settings||{}).pushUrl)return;callScript({action:'push',title:title,body:body,uids:uids||null})}
+function formResetPin(u){var r=S.roles[u]||{};
+  openSheet('Reset PIN for '+(r.name||'resident'),'<div class="meta">Choose a new 6-digit PIN and tell it to them personally. They can sign in with it straight away.</div>'+field('pin','New 6-digit PIN','text','','required pattern="\\d{6}" maxlength="6" inputmode="numeric"'),'Reset PIN',function(d){
+    return callScript({action:'resetPin',uid:u,pin:d.pin}).then(function(x){if(x&&x.ok){toast('PIN changed. Tell them the new PIN.');return true}toast((x&&x.error)||'Could not reset the PIN');return false})})}
+/* ---------- tick and cross on buttons ---------- */
+(function(){var busy=false;
+  function mark(){busy=false;document.querySelectorAll('button').forEach(function(b){var t=b.textContent.trim();if(!t||/^[✓✕]/.test(t))return;
+    var mk='';if(/^(Close|Cancel|Decline|Reject)$/i.test(t))mk='✕ ';else if(/^Approve/i.test(t))mk='✓ ';else if(b.type==='submit'&&b.closest('form.sheetform'))mk='✓ ';
+    if(mk&&!b.children.length)b.textContent=mk+t})}
+  new MutationObserver(function(){if(!busy){busy=true;requestAnimationFrame(mark)}}).observe(document.body,{childList:true,subtree:true});
+})();
+
+/* ---------- chat groups ---------- */
+S.groups={};S.gDoc={};S.gmsgs={};S.gUn={};S.ginv={};S.chatGroup='all';S.chatImg='';
+function myGroupIds(){var ids;if(R()==='super')ids=Object.keys(S.groups);else{var g=(S.roles[S.uid]||{}).groups||[];ids=g.filter(function(x){return S.groups[x]})}
+  return ids.sort(function(a,b){return String(S.groups[a].name).localeCompare(String(S.groups[b].name))})}
+function chatCur(){var c=S.chatGroup;if(c!=='all'&&myGroupIds().indexOf(c)<0)c='all';return c}
+function canPostGroup(g){return ((S.roles[S.uid]||{}).groups||[]).indexOf(g)>-1}
+function syncGroups(){if(!S.uid||!R())return;
+  if(R()==='super'){if(!S.gSuper){S.gSuper=true;S.db.collection('groups').onSnapshot(function(s){var m={};docs(s).forEach(function(d){m[d.id]=d});S.groups=m;render()},function(){S.gSuper=false})}return}
+  ((S.roles[S.uid]||{}).groups||[]).forEach(function(g){if(S.gDoc[g])return;S.gDoc[g]=1;S.db.doc('groups/'+g).onSnapshot(function(sn){if(sn.exists){var o=sn.data();o.id=g;S.groups[g]=o}else delete S.groups[g];render()},function(){S.gDoc[g]=0})})}
+function watchGroup(g){if(S.gUn[g])return;S.gUn[g]=1;S.db.collection('groups/'+g+'/messages').orderBy('ts','desc').limit(100).onSnapshot(function(sn){S.gmsgs[g]=docs(sn);render();resolveNames(S.gmsgs[g].map(function(c){return c.by}))},function(){S.gUn[g]=0})}
+function linkify(t){return esc(t).replace(/(https?:\/\/[^\s<]+)/g,function(u){return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+u+'</a>'})}
+function msgHtml(m){var me=m.by&&m.by===S.uid;var nm=me?'You':(m.name||nameOf(m.by)||'Neighbour');
+  var share='https://wa.me/?text='+encodeURIComponent((m.name||nm)+': '+(m.text||'')+(m.img?' (photo)':''));
+  var acts='<a class="lnk" href="'+esc(share)+'" target="_blank" rel="noopener">Share on WhatsApp</a>'+((me||R()==='super')?'<button class="lnk" type="button" data-act="chatDel" data-id="'+esc(m.id)+'">Delete</button>':'');
+  return '<div class="msg'+(me?' me':'')+'"><div class="who">'+esc(nm)+esc(m.tag?' · '+m.tag:roleTag(m.by))+(m.flat?' · '+esc(m.flat):'')+' · '+fd(m.ts)+'</div><div class="bub">'+(m.text?linkify(m.text):'')+(m.img?'<img class="cimg" src="'+m.img+'" alt="Photo" data-act="chatImg" data-id="'+esc(m.id)+'">':'')+'</div><div class="macts">'+acts+'</div></div>'}
+function chatImage(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onerror=function(){rej(new Error('read'))};
+  fr.onload=function(){var im=new Image();im.onerror=function(){rej(new Error('image'))};
+    im.onload=function(){var dim=900,q=.62,out='';
+      for(var i=0;i<8;i++){var sc=Math.min(1,dim/Math.max(im.width,im.height));var c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
+        var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL('image/jpeg',q);if(out.length<70000)break;if(q>.4)q-=.08;else dim=dim*.8}
+      if(out.length>=110000)rej(new Error('big'));else res(out)};
+    im.src=fr.result};fr.readAsDataURL(file)})}
+function chatPrev(){var el=$('#chPrev');if(!el)return;if(S.chatImg){el.hidden=false;el.innerHTML='<img src="'+S.chatImg+'" alt="Photo to send"><button class="btn ghost small" type="button" data-act="chatPhotoClear">Remove</button>'}else{el.hidden=true;el.innerHTML=''}}
+function setGroups(u,fn){var cur=((S.roles[u]||{}).groups||[]).slice();var nx=fn(cur);return S.db.doc('roles/'+u).update({groups:nx})}
+function memberChoices(sel){var ids=Object.keys(S.roles).sort(function(a,b){return natural(S.roles[a].flat||'',S.roles[b].flat||'')});
+  return ids.map(function(u){var r=S.roles[u];return '<label class="mrow"><input type="checkbox" name="m_'+esc(u)+'"'+(sel(u,r)?' checked':'')+'><span><b>'+esc(r.name||'Unnamed')+'</b><br><span class="meta">Flat '+esc(r.flat||'?')+(r.relation?' · '+esc(r.relation):'')+' · '+esc(ROLE_LABEL[r.role]||r.role)+'</span></span></label>'}).join('')}
+function formGroupNew(){
+  openSheet('New chat group','<div class="meta">Create a private group such as Ladies, Owners or Committee. Only its members (and you, privately) can see it.</div>'+field('name','Group name','text','','required maxlength="40"')+
+    select('start','Start with',['Nobody (I will choose)','All members','Owners only','Tenants only','Committee and finance'],'Nobody (I will choose)')+field('wa','WhatsApp group link (optional)','url','','maxlength="200"'),'Create group',function(d){
+    return run(async function(){var r=await S.db.collection('groups').add({name:d.name.slice(0,40),wa:d.wa||'',by:S.uid,ts:Date.now()});var gid=r.id;
+      var pick=Object.keys(S.roles).filter(function(u){var x=S.roles[u];if(d.start==='All members')return true;if(d.start==='Owners only')return x.relation==='Owner';if(d.start==='Tenants only')return x.relation==='Tenant';if(d.start==='Committee and finance')return x.role==='committee'||x.role==='finance';return false});
+      for(var i=0;i<pick.length;i++)await setGroups(pick[i],function(c){if(c.indexOf(gid)<0)c.push(gid);return c});
+      S.chatGroup=gid;S.chatImg='';toast('Group created')})})}
+function formGroupManage(gid){var g=S.groups[gid];if(!g)return;
+  var inv='https://wa.me/?text='+encodeURIComponent('Join our building app'+(S.settings&&S.settings.name?' ('+S.settings.name+')':'')+': '+location.origin+location.pathname);
+  openSheet('Manage group',field('name','Group name','text',g.name,'required maxlength="40"')+field('wa','WhatsApp group link (optional)','url',g.wa||'','maxlength="200"')+
+    '<div class="meta">Members. Only members can read or post. You can still watch every group privately.</div>'+memberChoices(function(u){return ((S.roles[u]||{}).groups||[]).indexOf(gid)>-1})+
+    area('phones','Add by phone numbers (for example copied from a WhatsApp group). One per line.','','rows="3" placeholder="0300 1234567"')+
+    '<div class="meta">Numbers already on the app join now. The rest join automatically when you approve them.</div>',
+    'Save group',async function(d){
+    return run(async function(){
+      await S.db.doc('groups/'+gid).update({name:d.name.slice(0,40),wa:d.wa||''});
+      var ids=Object.keys(S.roles);
+      for(var i=0;i<ids.length;i++){var u=ids[i];var want=!!d['m_'+u];var has=((S.roles[u]||{}).groups||[]).indexOf(gid)>-1;
+        if(want&&!has)await setGroups(u,function(c){c.push(gid);return c});else if(!want&&has)await setGroups(u,function(c){return c.filter(function(x){return x!==gid})})}
+      var nums=String(d.phones||'').split(/[\n,;]+/).map(pk).filter(function(x){return x.length>=10});var joined=0,wait=0;
+      for(var j=0;j<nums.length;j++){var k=nums[j];var hit=ids.filter(function(u){return pk(S.roles[u].phone)===k})[0];
+        if(hit){await setGroups(hit,function(c){if(c.indexOf(gid)<0)c.push(gid);return c});joined++}
+        else{var ex=(S.ginv||{})[k];var gl=((ex&&ex.groups)||[]).slice();if(gl.indexOf(gid)<0)gl.push(gid);await S.db.doc('groupinvites/'+k).set({groups:gl,ts:Date.now()});wait++}}
+      toast('Saved'+(nums.length?'. '+joined+' added now, '+wait+' will join when approved':''))}).then(function(ok){return ok})},
+    '<a class="btn ghost" href="'+esc(inv)+'" target="_blank" rel="noopener">Invite on WhatsApp</a><button class="btn danger" type="button" data-act="groupDelete" data-v="'+esc(gid)+'">Delete group</button>')}
+function openChatTools(){infoSheet('Chat tools','<div class="meta">Photos and messages take up space in the database. Remove old ones from time to time.</div><div class="actions"><button class="btn ghost" data-act="pruneChat" data-v="30">Delete messages older than 30 days</button><button class="btn ghost" data-act="pruneChat" data-v="90">Delete messages older than 90 days</button></div>')}
+async function pruneAll(days){var cut=Date.now()-days*86400000;var paths=['messages'].concat(Object.keys(S.groups).map(function(g){return 'groups/'+g+'/messages'}));var n=0;
+  var ok=await run(async function(){for(var i=0;i<paths.length;i++){var sn=await S.db.collection(paths[i]).where('ts','<',cut).get();for(var j=0;j<sn.docs.length;j++){await S.db.doc(paths[i]+'/'+sn.docs[j].id).delete();n++}}});
+  if(ok){toast(n+' old message'+(n===1?'':'s')+' deleted');closeSheet()}}
 window.__start=start;
 })();
 </script>
