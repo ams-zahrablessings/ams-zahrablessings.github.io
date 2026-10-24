@@ -641,7 +641,7 @@ function formManage(){
     return run(async function(){await saveSettings(body);await ensureFlats(fl)})},clr)}
 async function saveProfile(patch){S.profile=Object.assign({},S.profile,patch);
   if(S.uid)try{await S.db.doc('data/users/'+S.uid+'/profile').set(S.profile)}catch(e){}}
-async function saveFlat(f){S.flat=f;draw();await saveProfile({flat:f})}
+async function saveFlat(f){S.flat=f;draw();await saveProfile({flat:f});var mr=S.roles[S.uid];if(mr&&mr.role==='super'&&mr.flat!==f){try{var o=Object.assign({},mr);delete o.id;o.flat=f;await S.db.doc('roles/'+S.uid).set(o)}catch(e){}}}
 
 /* ---------- admin review of submitted receipts ---------- */
 function openReview(){
@@ -854,14 +854,14 @@ function gateView(){
     btn.disabled=false;if(ok)toast('Request sent to the committee')})
 }
 function rb(u,role,label){return '<button class="btn ghost small" data-act="setRole" data-uid="'+esc(u)+'" data-v="'+role+'">'+label+'</button>'}
-function personCard(u,r){var b='';
+function personCard(u,r){var b='';if(u===S.uid){r=Object.assign({},r);if(!r.flat&&S.flat)r.flat=S.flat}
   if(u!==S.uid){
     if(r.role==='member'&&may('financeAssign'))b+=rb(u,'finance','Make finance');
     if(r.role==='finance'&&may('financeAssign'))b+=rb(u,'member','Make member');
     if((r.role==='member'||r.role==='finance')&&may('committeeAssign'))b+=rb(u,'committee','Make committee');
     if(r.role==='committee'&&may('committeeAssign'))b+=rb(u,'member','Make member');
     if(may('people')&&(r.role!=='committee'||may('committeeAssign')))b+='<button class="btn danger small" data-act="removeRole" data-uid="'+esc(u)+'">Remove access</button>'}
-  return '<div class="card" data-q="'+esc(((r.name||'')+' '+(r.flat||'')+' '+(r.phone||'')).toLowerCase())+'"><div class="row"><div><div class="title">'+esc(r.name||'Unnamed')+(u===S.uid?' (you)':'')+'</div><div class="meta">Flat '+esc(r.flat||'?')+' · '+esc(r.relation||'')+(r.phone?' · '+esc(r.phone):'')+'</div></div><span class="pill '+(r.role==='finance'?'ok':(r.role==='committee'?'warn':''))+'">'+esc(ROLE_LABEL[r.role]||r.role)+'</span></div>'+(b?'<div class="actions">'+b+'</div>':'')+'</div>'}
+  return '<div class="card" data-q="'+esc(((r.name||'')+' '+(r.flat||'')+' '+(r.phone||'')).toLowerCase())+'"><div class="row"><div><div class="title">'+esc(r.name||'Unnamed')+(u===S.uid?' (you)':'')+'</div><div class="meta">Flat '+esc(r.flat||'?')+(r.relation?' · '+esc(r.relation):'')+(r.phone?' · '+esc(r.phone):'')+'</div></div><span class="pill '+(r.role==='finance'?'ok':(r.role==='committee'?'warn':''))+'">'+esc(ROLE_LABEL[r.role]||r.role)+'</span></div>'+(b?'<div class="actions">'+b+'</div>':'')+'</div>'}
 function openPeople(){
   var h='';
   if(!S.isAdmin)h+='<div class="banner alert"><span>To see join requests and save changes you need Editor access. Ask the super admin to share the app with you as Editor.</span></div>';
