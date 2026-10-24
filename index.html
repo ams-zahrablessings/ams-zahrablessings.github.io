@@ -131,7 +131,7 @@ nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1
 nav.tabs button.on{color:var(--accent);background:var(--soft)}
 nav.tabs .dot{position:absolute;top:1px;left:calc(50% + 6px);background:var(--bad);color:#fff;border-radius:99px;font-size:10px;line-height:1;padding:3px 5px;font-weight:700}
 
-#sheetwrap{position:fixed;inset:0;z-index:50;background:rgba(5,12,11,.55);display:flex;align-items:flex-end;justify-content:center}
+#sheetwrap{position:fixed;inset:0;z-index:50;background:rgba(3,8,8,.82);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--surface);width:100%;max-width:640px;max-height:92dvh;overflow:auto;border-radius:18px 18px 0 0;
   padding:18px var(--gr) calc(18px + env(safe-area-inset-bottom,0px)) var(--gl);display:flex;flex-direction:column;gap:14px}
 .sheet .bar h3{font-size:19px}
@@ -167,6 +167,15 @@ nav.tabs .dot{position:absolute;top:1px;left:calc(50% + 6px);background:var(--ba
 .tile b{font-family:var(--font-d);font-size:19px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;margin-top:4px}
 .tile .l{color:var(--muted);font-size:12.5px}
 .tile .s{color:var(--muted);font-size:11.5px;margin-top:2px}
+
+.sheet{box-shadow:0 -12px 44px rgba(0,0,0,.5)}
+.sheet[data-k=inbox]{padding-top:0;border-top:0;overflow:auto}
+.sheet[data-k=inbox]>.bar{position:sticky;top:0;z-index:2;background:linear-gradient(135deg,#B45309,#E58A1F);color:#fff;margin:0 calc(-1*var(--gr)) 4px calc(-1*var(--gl));padding:16px var(--gr) 14px var(--gl);border-radius:18px 18px 0 0}
+.sheet[data-k=inbox]>.bar h3{color:#fff;font-size:20px}
+.sheet[data-k=inbox]>.bar .btn.ghost{background:rgba(255,255,255,.2);color:#fff;border-color:transparent}
+.sheet[data-k=inbox] .card{border-left:4px solid var(--accent)}
+.sheet[data-k=inbox] .card.attn{border-left-color:var(--amb);background:var(--amb-bg)}
+.sh{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--amb);margin-top:6px}
 </style>
 
 <header class="top">
@@ -777,9 +786,9 @@ function notifItems(){
 function notifCount(){try{var n=notifItems();return n.attn.length+n.ev.filter(function(e){return e.unread}).length}catch(e){return 0}}
 function openInbox(){
   var n=notifItems();var h='';
-  if(n.attn.length)h+='<div class="meta">Needs your attention</div>'+n.attn.map(function(a){return '<div class="card"><div class="row"><div><div class="title">'+esc(a.title)+'</div><div class="meta">'+esc(a.sub)+'</div></div><span class="pill '+a.cls+'">'+esc(a.lbl||'Due')+'</span></div><div class="actions"><button class="btn small" data-act="gotab" data-v="'+a.tab+'">Open</button></div></div>'}).join('');
-  h+='<div class="meta">Recent activity</div>'+(n.ev.length?n.ev.map(function(e){return '<div class="card"><div class="row"><div><div class="title">'+(e.unread?'<span class="new"></span>':'')+esc(e.title)+'</div><div class="meta">'+esc(e.sub)+'</div></div><span class="meta">'+fd(e.ts)+'</span></div><div class="actions"><button class="btn ghost small" data-act="gotab" data-v="'+e.tab+'">Open</button></div></div>'}).join(''):'<div class="empty"><b>Nothing new</b>Notices, new collections and updates on your receipts and requests appear here.</div>');
-  infoSheet('Notifications',h);
+  if(n.attn.length)h+='<div class="sh">Needs your attention</div>'+n.attn.map(function(a){return '<div class="card attn"><div class="row"><div><div class="title">'+esc(a.title)+'</div><div class="meta">'+esc(a.sub)+'</div></div><span class="pill '+a.cls+'">'+esc(a.lbl||'Due')+'</span></div><div class="actions"><button class="btn small" data-act="gotab" data-v="'+a.tab+'">Open</button></div></div>'}).join('');
+  h+='<div class="sh">Recent activity</div>'+(n.ev.length?n.ev.map(function(e){return '<div class="card"><div class="row"><div><div class="title">'+(e.unread?'<span class="new"></span>':'')+esc(e.title)+'</div><div class="meta">'+esc(e.sub)+'</div></div><span class="meta">'+fd(e.ts)+'</span></div><div class="actions"><button class="btn ghost small" data-act="gotab" data-v="'+e.tab+'">Open</button></div></div>'}).join(''):'<div class="empty"><b>Nothing new</b>Notices, new collections and updates on your receipts and requests appear here.</div>');
+  infoSheet('Notifications',h);$('#sheet').dataset.k='inbox';
   if(n.ev.some(function(e){return e.unread}))saveProfile({seen:Date.now()}).then(function(){setTimeout(draw,0)})}
 
 /* ---------- collection types ---------- */
